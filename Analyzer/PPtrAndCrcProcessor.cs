@@ -68,7 +68,7 @@ public class PPtrAndCrcProcessor : IDisposable
                 catch (Exception e)
                 {
                     Console.Error.WriteLine();
-                    Console.Error.WriteLine($"Error opening resource file {filename}");
+                    Console.Error.WriteLine($"Error opening resource file {filename}. {e}");
                     reader = null;
                 }
             }

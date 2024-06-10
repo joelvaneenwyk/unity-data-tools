@@ -72,7 +72,7 @@ public class AnalyzerTool
                                 catch (Exception e)
                                 {
                                     Console.Error.WriteLine();
-                                    Console.Error.WriteLine($"Error processing {node.Path} in archive {file}");
+                                    Console.Error.WriteLine($"Error processing {node.Path} in archive {file}. {e}");
                                 }
                             }
                         }

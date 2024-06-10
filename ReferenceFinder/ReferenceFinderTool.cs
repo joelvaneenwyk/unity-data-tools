@@ -6,13 +6,13 @@ using System.IO;
 
 namespace UnityDataTools.ReferenceFinder;
 
-class ReferenceTreeNode
+internal class ReferenceTreeNode
 {
     public ReferenceTreeNode(long id)
     {
         Id = id;
     }
-        
+
     public readonly long Id;
     public Dictionary<(long id, string propertyPath), ReferenceTreeNode> Children = new Dictionary<(long, string), ReferenceTreeNode>();
 }
@@ -28,7 +28,7 @@ public class ReferenceFinderTool
 
     public int FindReferences(string objectName, string objectType, string databasePath, string outputFile, bool findAll)
     {
-        var objectIds = new List<long>();
+        List<long> objectIds = new();
         SQLiteConnection db;
 
         try
@@ -44,8 +44,8 @@ public class ReferenceFinderTool
 
         var checkRefsTableCmd = db.CreateCommand();
         checkRefsTableCmd.CommandText = "SELECT EXISTS (SELECT 1 FROM refs)";
-        var hasRefs = checkRefsTableCmd.ExecuteScalar();
-        if ((long)hasRefs == 0)
+        object hasRefs = checkRefsTableCmd.ExecuteScalar();
+        if (hasRefs != null && (long)hasRefs == 0)
         {
             Console.WriteLine("Database 'refs' table empty! Make sure to not use the --skip-references option when generating the database");
             return 1;
@@ -53,7 +53,7 @@ public class ReferenceFinderTool
 
         SQLiteCommand getObjectIds;
 
-        if (objectType != null && objectType != "")
+        if (!string.IsNullOrEmpty(objectType))
         {
             getObjectIds = db.CreateCommand();
             getObjectIds.CommandText = "SELECT id FROM object_view WHERE name = @name AND type = @type";
@@ -86,7 +86,7 @@ public class ReferenceFinderTool
 
     public int FindReferences(long objectId, string databasePath, string outputFile, bool findAll)
     {
-        var objectIds = new List<long>();
+        List<long> objectIds = new List<long>();
         SQLiteConnection db;
 
         try
@@ -188,7 +188,7 @@ public class ReferenceFinderTool
 
     void OutputReferenceNode(ReferenceTreeNode node, string propertyPath, int indentation)
     {
-        var indent = new string(' ', indentation * 2);
+        string indent = new string(' ', indentation * 2);
 
         m_GetObjectCommand.Parameters["@id"].Value = node.Id;
 
@@ -196,10 +196,10 @@ public class ReferenceFinderTool
         {
             reader.Read();
 
-            var objectType = reader.GetString(0);
-            var objectName = reader.GetString(1);
-            var gameObject = reader.GetString(2);
-            var script = reader.GetString(3);
+            string objectType = reader.GetString(0);
+            string objectName = reader.GetString(1);
+            string gameObject = reader.GetString(2);
+            string script = reader.GetString(3);
 
             if (propertyPath != "")
             {
@@ -217,7 +217,7 @@ public class ReferenceFinderTool
             m_Writer.WriteLine();
         }
 
-        foreach (var child in node.Children)
+        foreach (KeyValuePair<(long id, string propertyPath), ReferenceTreeNode> child in node.Children)
         {
             OutputReferenceNode(child.Value, child.Key.propertyPath, indentation + 1);
         }
@@ -225,7 +225,7 @@ public class ReferenceFinderTool
 
     ReferenceTreeNode ProcessReferences(long id, bool findAll)
     {
-        var references = new List<(long id, string propertyPath, bool isAsset)>();
+        List<(long id, string propertyPath, bool isAsset)> references = new List<(long id, string propertyPath, bool isAsset)>();
 
         m_GetRefsCommand.Parameters["@id"].Value = id;
 
@@ -238,7 +238,7 @@ public class ReferenceFinderTool
         }
 
         ReferenceTreeNode node = new ReferenceTreeNode(id);
-        var wasUsed = false;
+        bool wasUsed = false;
 
         foreach (var reference in references)
         {
