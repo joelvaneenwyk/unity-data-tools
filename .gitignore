@@ -8,7 +8,7 @@
 
 **/*.csproj.user
 **/*.suo
-**/.vs
+**/.vs/
 **/.vsconfig
 **/*.vcxproj.user
 **/*.sdf
@@ -34,3 +34,6 @@ UnityFileSystemTestData/**/*.sln
 UnityFileSystemTestData/ProjectSettings/
 UnityFileSystemTestData/UserSettings/
 UnityFileSystemTestData/Packages/
+
+.sarif/
+.gdn/
