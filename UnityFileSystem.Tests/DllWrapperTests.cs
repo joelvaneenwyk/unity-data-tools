@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using UnityDataTools.TestCommon;
 
 namespace UnityDataTools.FileSystem.Tests;
@@ -21,7 +22,7 @@ public class DllInitCleanupTests
     public void Init_CalledOnce_ReturnSuccess()
     {
         var r = DllWrapper.Init();
-        Assert.AreEqual(ReturnCode.Success, r);
+        ClassicAssert.AreEqual(ReturnCode.Success, r);
     }
 
     [Test]
@@ -29,7 +30,7 @@ public class DllInitCleanupTests
     {
         DllWrapper.Init();
         var r = DllWrapper.Cleanup();
-        Assert.AreEqual(ReturnCode.Success, r);
+        ClassicAssert.AreEqual(ReturnCode.Success, r);
     }
 
     [Test]
@@ -37,7 +38,7 @@ public class DllInitCleanupTests
     {
         DllWrapper.Init();
         var r = DllWrapper.Init();
-        Assert.AreEqual(ReturnCode.AlreadyInitialized, r);
+        ClassicAssert.AreEqual(ReturnCode.AlreadyInitialized, r);
     }
 
     [Test]
@@ -47,62 +48,62 @@ public class DllInitCleanupTests
 
         DllWrapper.Cleanup();
         var r = DllWrapper.Cleanup();
-        Assert.AreEqual(ReturnCode.NotInitialized, r);
+        ClassicAssert.AreEqual(ReturnCode.NotInitialized, r);
     }
 
     [Test]
     public void AnyFunction_NotInitialized_ReturnError()
     {
         var r = DllWrapper.MountArchive("", "", out _);
-        Assert.AreEqual(ReturnCode.NotInitialized, r);
+        ClassicAssert.AreEqual(ReturnCode.NotInitialized, r);
 
         r = DllWrapper.UnmountArchive(IntPtr.Zero);
-        Assert.AreEqual(ReturnCode.NotInitialized, r);
+        ClassicAssert.AreEqual(ReturnCode.NotInitialized, r);
 
         r = DllWrapper.GetArchiveNodeCount(new UnityArchiveHandle(), out _);
-        Assert.AreEqual(ReturnCode.NotInitialized, r);
+        ClassicAssert.AreEqual(ReturnCode.NotInitialized, r);
 
         r = DllWrapper.GetArchiveNode(new UnityArchiveHandle(), 0, null, 0, out _, out _);
-        Assert.AreEqual(ReturnCode.NotInitialized, r);
+        ClassicAssert.AreEqual(ReturnCode.NotInitialized, r);
 
         r = DllWrapper.OpenFile("", out _);
-        Assert.AreEqual(ReturnCode.NotInitialized, r);
+        ClassicAssert.AreEqual(ReturnCode.NotInitialized, r);
 
         r = DllWrapper.ReadFile(new UnityFileHandle(), 0, null, out _);
-        Assert.AreEqual(ReturnCode.NotInitialized, r);
+        ClassicAssert.AreEqual(ReturnCode.NotInitialized, r);
 
         r = DllWrapper.SeekFile(new UnityFileHandle(), 0, 0, out _);
-        Assert.AreEqual(ReturnCode.NotInitialized, r);
+        ClassicAssert.AreEqual(ReturnCode.NotInitialized, r);
 
         r = DllWrapper.GetFileSize(new UnityFileHandle(), out _);
-        Assert.AreEqual(ReturnCode.NotInitialized, r);
+        ClassicAssert.AreEqual(ReturnCode.NotInitialized, r);
 
         r = DllWrapper.CloseFile(IntPtr.Zero);
-        Assert.AreEqual(ReturnCode.NotInitialized, r);
+        ClassicAssert.AreEqual(ReturnCode.NotInitialized, r);
 
         r = DllWrapper.OpenSerializedFile("", out _);
-        Assert.AreEqual(ReturnCode.NotInitialized, r);
+        ClassicAssert.AreEqual(ReturnCode.NotInitialized, r);
 
         r = DllWrapper.CloseSerializedFile(IntPtr.Zero);
-        Assert.AreEqual(ReturnCode.NotInitialized, r);
+        ClassicAssert.AreEqual(ReturnCode.NotInitialized, r);
 
         r = DllWrapper.GetExternalReferenceCount(new SerializedFileHandle(), out _);
-        Assert.AreEqual(ReturnCode.NotInitialized, r);
+        ClassicAssert.AreEqual(ReturnCode.NotInitialized, r);
 
         r = DllWrapper.GetExternalReference(new SerializedFileHandle(), 0, null, 0, null, out _);
-        Assert.AreEqual(ReturnCode.NotInitialized, r);
+        ClassicAssert.AreEqual(ReturnCode.NotInitialized, r);
 
         r = DllWrapper.GetObjectCount(new SerializedFileHandle(), out _);
-        Assert.AreEqual(ReturnCode.NotInitialized, r);
+        ClassicAssert.AreEqual(ReturnCode.NotInitialized, r);
 
         r = DllWrapper.GetObjectInfo(new SerializedFileHandle(), null, 0);
-        Assert.AreEqual(ReturnCode.NotInitialized, r);
+        ClassicAssert.AreEqual(ReturnCode.NotInitialized, r);
 
         r = DllWrapper.GetTypeTree(new SerializedFileHandle(), 0, out _);
-        Assert.AreEqual(ReturnCode.NotInitialized, r);
+        ClassicAssert.AreEqual(ReturnCode.NotInitialized, r);
 
         r = DllWrapper.GetTypeTreeNodeInfo(new TypeTreeHandle(), 0, null, 0, null, 0, out _, out _, out _, out _, out _, out _);
-        Assert.AreEqual(ReturnCode.NotInitialized, r);
+        ClassicAssert.AreEqual(ReturnCode.NotInitialized, r);
     }
 }
 
@@ -128,8 +129,8 @@ public class DllMountUnmountTests : AssetBundleTestFixture
     public void MountArchive_InvalidPath_ReturnError()
     {
         var r = DllWrapper.MountArchive("bad/path", "archive:/", out var handle);
-        Assert.AreEqual(ReturnCode.FileNotFound, r);
-        Assert.True(handle.IsInvalid);
+        ClassicAssert.AreEqual(ReturnCode.FileNotFound, r);
+        ClassicAssert.True(handle.IsInvalid);
     }
 
     [Test]
@@ -137,15 +138,15 @@ public class DllMountUnmountTests : AssetBundleTestFixture
     {
         var path = Path.Combine(Context.TestDataFolder, "invalidfile");
         var r = DllWrapper.MountArchive(path, "archive:/", out var handle);
-        Assert.AreEqual(ReturnCode.FileFormatError, r);
-        Assert.True(handle.IsInvalid);
+        ClassicAssert.AreEqual(ReturnCode.FileFormatError, r);
+        ClassicAssert.True(handle.IsInvalid);
     }
 
     [Test]
     public void UnmountArchive_InvalidHandle_ReturnError()
     {
         var r = DllWrapper.UnmountArchive(IntPtr.Zero);
-        Assert.AreEqual(ReturnCode.InvalidArgument, r);
+        ClassicAssert.AreEqual(ReturnCode.InvalidArgument, r);
     }
 
     [Test]
@@ -153,8 +154,8 @@ public class DllMountUnmountTests : AssetBundleTestFixture
     {
         var path = Path.Combine(Context.UnityDataFolder, "assetbundle");
         var r = DllWrapper.MountArchive(path, "archive:/", out var handle);
-        Assert.AreEqual(ReturnCode.Success, r);
-        Assert.IsFalse(handle.IsInvalid);
+        ClassicAssert.AreEqual(ReturnCode.Success, r);
+        ClassicAssert.IsFalse(handle.IsInvalid);
 
         handle.Dispose();
     }
@@ -196,15 +197,15 @@ public class DllArchiveTests : AssetBundleTestFixture
     public void GetArchiveNodeCount_InvalidHandle_ReturnError()
     {
         var r = DllWrapper.GetArchiveNodeCount(new UnityArchiveHandle(), out _);
-        Assert.AreEqual(ReturnCode.InvalidArgument, r);
+        ClassicAssert.AreEqual(ReturnCode.InvalidArgument, r);
     }
 
     [Test]
     public void GetArchiveNodeCount_ReturnExpectedCount()
     {
         var r = DllWrapper.GetArchiveNodeCount(m_Archive, out var count);
-        Assert.AreEqual(ReturnCode.Success, r);
-        Assert.AreEqual(Context.ExpectedData.Get("NodeCount"), count);
+        ClassicAssert.AreEqual(ReturnCode.Success, r);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("NodeCount"), count);
     }
 
     [Test]
@@ -212,25 +213,25 @@ public class DllArchiveTests : AssetBundleTestFixture
     {
         var path = new StringBuilder(256);
         var r = DllWrapper.GetArchiveNode(m_Archive, 0, path, 256, out var size, out var flags);
-        Assert.AreEqual(ReturnCode.Success, r);
+        ClassicAssert.AreEqual(ReturnCode.Success, r);
 
-        Assert.AreEqual("CAB-5d40f7cad7c871cf2ad2af19ac542994", path.ToString());
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-Size"), size);
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-Flags"), (long)flags);
+        ClassicAssert.AreEqual("CAB-5d40f7cad7c871cf2ad2af19ac542994", path.ToString());
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-Size"), size);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-Flags"), (long)flags);
 
         r = DllWrapper.GetArchiveNode(m_Archive, 1, path, 256, out size, out flags);
-        Assert.AreEqual(ReturnCode.Success, r);
+        ClassicAssert.AreEqual(ReturnCode.Success, r);
 
-        Assert.AreEqual("CAB-5d40f7cad7c871cf2ad2af19ac542994.resS", path.ToString());
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994.resS-Size"), size);
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994.resS-Flags"), (long)flags);
+        ClassicAssert.AreEqual("CAB-5d40f7cad7c871cf2ad2af19ac542994.resS", path.ToString());
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994.resS-Size"), size);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994.resS-Flags"), (long)flags);
 
         r = DllWrapper.GetArchiveNode(m_Archive, 2, path, 256, out size, out flags);
-        Assert.AreEqual(ReturnCode.Success, r);
+        ClassicAssert.AreEqual(ReturnCode.Success, r);
 
-        Assert.AreEqual("CAB-5d40f7cad7c871cf2ad2af19ac542994.resource", path.ToString());
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994.resource-Size"), size);
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994.resource-Flags"), (long)flags);
+        ClassicAssert.AreEqual("CAB-5d40f7cad7c871cf2ad2af19ac542994.resource", path.ToString());
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994.resource-Size"), size);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994.resource-Flags"), (long)flags);
     }
 
     [Test]
@@ -238,14 +239,14 @@ public class DllArchiveTests : AssetBundleTestFixture
     {
         var path = new StringBuilder(10);
         var r = DllWrapper.GetArchiveNode(m_Archive, 0, path, 10, out var size, out var flags);
-        Assert.AreEqual(ReturnCode.DestinationBufferTooSmall, r);
+        ClassicAssert.AreEqual(ReturnCode.DestinationBufferTooSmall, r);
     }
 
     [Test]
     public void GetArchiveNode_InvalidHandle_ReturnError()
     {
         var r = DllWrapper.GetArchiveNode(new UnityArchiveHandle(), 0, new StringBuilder(), 256, out var size, out var flags);
-        Assert.AreEqual(ReturnCode.InvalidArgument, r);
+        ClassicAssert.AreEqual(ReturnCode.InvalidArgument, r);
     }
 }
 
@@ -276,7 +277,7 @@ public class DllLFileTests : AssetBundleTestFixture
     public void OpenFile_InvalidPath_ReturnError()
     {
         var r = DllWrapper.OpenFile("bad/path", out _);
-        Assert.AreEqual(ReturnCode.FileNotFound, r);
+        ClassicAssert.AreEqual(ReturnCode.FileNotFound, r);
     }
 
     [Test]
@@ -284,8 +285,8 @@ public class DllLFileTests : AssetBundleTestFixture
     {
         var path = Path.Combine(Context.TestDataFolder, "TextFile.txt");
         var r = DllWrapper.OpenFile(path, out var file);
-        Assert.AreEqual(ReturnCode.Success, r);
-        Assert.IsFalse(file.IsInvalid);
+        ClassicAssert.AreEqual(ReturnCode.Success, r);
+        ClassicAssert.IsFalse(file.IsInvalid);
 
         file.Dispose();
     }
@@ -303,7 +304,7 @@ public class DllLFileTests : AssetBundleTestFixture
     public void CloseFile_InvalidHandle_ReturnError()
     {
         var r = DllWrapper.CloseFile(IntPtr.Zero);
-        Assert.AreEqual(ReturnCode.InvalidArgument, r);
+        ClassicAssert.AreEqual(ReturnCode.InvalidArgument, r);
     }
 
     [Test]
@@ -313,7 +314,7 @@ public class DllLFileTests : AssetBundleTestFixture
         DllWrapper.OpenFile(path, out var file);
         DllWrapper.GetFileSize(file, out var size);
 
-        Assert.AreEqual(21, size);
+        ClassicAssert.AreEqual(21, size);
 
         file.Dispose();
     }
@@ -322,7 +323,7 @@ public class DllLFileTests : AssetBundleTestFixture
     public void GetFileSize_InvalidHandle_ReturnError()
     {
         var r = DllWrapper.GetFileSize(new UnityFileHandle(), out _);
-        Assert.AreEqual(ReturnCode.InvalidArgument, r);
+        ClassicAssert.AreEqual(ReturnCode.InvalidArgument, r);
     }
 
     [Test]
@@ -332,28 +333,28 @@ public class DllLFileTests : AssetBundleTestFixture
         DllWrapper.OpenFile(path, out var file);
 
         DllWrapper.SeekFile(file, 16, SeekOrigin.Begin, out var newPos);
-        Assert.AreEqual(16, newPos);
+        ClassicAssert.AreEqual(16, newPos);
 
         var buffer = new Byte[16];
         DllWrapper.ReadFile(file, 4, buffer, out var actualSize);
-        Assert.AreEqual(4, actualSize);
-        Assert.AreEqual("file", Encoding.Default.GetString(buffer, 0, (int)actualSize));
+        ClassicAssert.AreEqual(4, actualSize);
+        ClassicAssert.AreEqual("file", Encoding.Default.GetString(buffer, 0, (int)actualSize));
 
         DllWrapper.SeekFile(file, -4, SeekOrigin.Current, out newPos);
-        Assert.AreEqual(16, newPos);
+        ClassicAssert.AreEqual(16, newPos);
 
         buffer = new Byte[16];
         DllWrapper.ReadFile(file, 4, buffer, out actualSize);
-        Assert.AreEqual(4, actualSize);
-        Assert.AreEqual("file", Encoding.Default.GetString(buffer, 0, (int)actualSize));
+        ClassicAssert.AreEqual(4, actualSize);
+        ClassicAssert.AreEqual("file", Encoding.Default.GetString(buffer, 0, (int)actualSize));
 
         DllWrapper.SeekFile(file, -5, SeekOrigin.End, out newPos);
-        Assert.AreEqual(16, newPos);
+        ClassicAssert.AreEqual(16, newPos);
 
         buffer = new Byte[16];
         DllWrapper.ReadFile(file, 4, buffer, out actualSize);
-        Assert.AreEqual(4, actualSize);
-        Assert.AreEqual("file", Encoding.Default.GetString(buffer, 0, (int)actualSize));
+        ClassicAssert.AreEqual(4, actualSize);
+        ClassicAssert.AreEqual("file", Encoding.Default.GetString(buffer, 0, (int)actualSize));
 
         file.Dispose();
     }
@@ -362,7 +363,7 @@ public class DllLFileTests : AssetBundleTestFixture
     public void SeekFile_InvalidHandle_ReturnError()
     {
         var r = DllWrapper.SeekFile(new UnityFileHandle(), 0, SeekOrigin.Begin, out _);
-        Assert.AreEqual(ReturnCode.InvalidArgument, r);
+        ClassicAssert.AreEqual(ReturnCode.InvalidArgument, r);
     }
 
     [Test]
@@ -375,8 +376,8 @@ public class DllLFileTests : AssetBundleTestFixture
 
         var r = DllWrapper.ReadFile(file, 1000, buffer, out var actualSize);
 
-        Assert.AreEqual(21, actualSize);
-        Assert.AreEqual("This is my text file.", Encoding.Default.GetString(buffer, 0, (int)actualSize));
+        ClassicAssert.AreEqual(21, actualSize);
+        ClassicAssert.AreEqual("This is my text file.", Encoding.Default.GetString(buffer, 0, (int)actualSize));
 
         file.Dispose();
     }
@@ -385,15 +386,15 @@ public class DllLFileTests : AssetBundleTestFixture
     public void ReadFile_InvalidHandle_ReturnError()
     {
         var r = DllWrapper.ReadFile(new UnityFileHandle(), 10, new byte[10], out _);
-        Assert.AreEqual(ReturnCode.InvalidArgument, r);
+        ClassicAssert.AreEqual(ReturnCode.InvalidArgument, r);
     }
 
     [Test]
     public void OpenFile_ArchiveFileSystem_ReturnSuccess()
     {
         var r = DllWrapper.OpenFile("archive:/CAB-5d40f7cad7c871cf2ad2af19ac542994", out var file);
-        Assert.AreEqual(ReturnCode.Success, r);
-        Assert.IsFalse(file.IsInvalid);
+        ClassicAssert.AreEqual(ReturnCode.Success, r);
+        ClassicAssert.IsFalse(file.IsInvalid);
 
         file.Dispose();
     }
@@ -414,9 +415,9 @@ public class DllLFileTests : AssetBundleTestFixture
         var buffer = new Byte[100];
         var r = DllWrapper.ReadFile(file, 100, buffer, out var actualSize);
 
-        Assert.AreEqual(ReturnCode.Success, r);
-        Assert.AreEqual(100, actualSize);
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-Data"), buffer);
+        ClassicAssert.AreEqual(ReturnCode.Success, r);
+        ClassicAssert.AreEqual(100, actualSize);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-Data"), buffer);
 
         file.Dispose();
     }
@@ -449,7 +450,7 @@ public class DllSerializedFileTests : AssetBundleTestFixture
     public void OpenSerializedFile_InvalidPath_ReturnError()
     {
         var r = DllWrapper.OpenSerializedFile("bad/path", out _);
-        Assert.AreEqual(ReturnCode.FileNotFound, r);
+        ClassicAssert.AreEqual(ReturnCode.FileNotFound, r);
     }
 
     [Test]
@@ -462,14 +463,14 @@ public class DllSerializedFileTests : AssetBundleTestFixture
         // the SerializedFile is implemented! When opening a SerializedFile, the header is read and if the version is higher than some value,
         // the kSerializedFileLoadError_HigherSerializedFileVersion error is returned. If it's not, then it will be another error. There's no
         // signature to prevent this kind of issue.
-        Assert.AreNotEqual(ReturnCode.Success, r);
+        ClassicAssert.AreNotEqual(ReturnCode.Success, r);
     }
 
     [Test]
     public void OpenSerializedFile_ValidSerializedFile_ReturnSuccess()
     {
         var r = DllWrapper.OpenSerializedFile("archive:/CAB-5d40f7cad7c871cf2ad2af19ac542994", out var file);
-        Assert.AreEqual(ReturnCode.Success, r);
+        ClassicAssert.AreEqual(ReturnCode.Success, r);
         file.Dispose();
     }
 
@@ -484,7 +485,7 @@ public class DllSerializedFileTests : AssetBundleTestFixture
     public void CloseSerializedFile_InvalidHandle_ReturnError()
     {
         var r = DllWrapper.CloseSerializedFile(IntPtr.Zero);
-        Assert.AreEqual(ReturnCode.InvalidArgument, r);
+        ClassicAssert.AreEqual(ReturnCode.InvalidArgument, r);
     }
 
     [Test]
@@ -493,8 +494,8 @@ public class DllSerializedFileTests : AssetBundleTestFixture
         DllWrapper.OpenSerializedFile("archive:/CAB-5d40f7cad7c871cf2ad2af19ac542994", out var file);
 
         var r = DllWrapper.GetExternalReferenceCount(file, out var count);
-        Assert.AreEqual(ReturnCode.Success, r);
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-ExtRefCount"), count);
+        ClassicAssert.AreEqual(ReturnCode.Success, r);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-ExtRefCount"), count);
 
         file.Dispose();
     }
@@ -503,7 +504,7 @@ public class DllSerializedFileTests : AssetBundleTestFixture
     public void GetExternalReferenceCount_InvalidHandle_ReturnError()
     {
         var r = DllWrapper.GetExternalReferenceCount(new SerializedFileHandle(), out _);
-        Assert.AreEqual(ReturnCode.InvalidArgument, r);
+        ClassicAssert.AreEqual(ReturnCode.InvalidArgument, r);
     }
 
     [Test]
@@ -514,7 +515,7 @@ public class DllSerializedFileTests : AssetBundleTestFixture
         var path = new StringBuilder(10);
         var guid = new StringBuilder(32);
         var r = DllWrapper.GetExternalReference(file, 0, path, 10, guid, out var refType);
-        Assert.AreEqual(ReturnCode.DestinationBufferTooSmall, r);
+        ClassicAssert.AreEqual(ReturnCode.DestinationBufferTooSmall, r);
 
         file.Dispose();
     }
@@ -532,10 +533,10 @@ public class DllSerializedFileTests : AssetBundleTestFixture
         {
             var r = DllWrapper.GetExternalReference(file, i, path, 256, guid, out var refType);
                 
-            Assert.AreEqual(ReturnCode.Success, r);
-            Assert.AreEqual(Context.ExpectedData.Get($"CAB-5d40f7cad7c871cf2ad2af19ac542994-ExtRef{i}-Guid"), guid.ToString());
-            Assert.AreEqual(Context.ExpectedData.Get($"CAB-5d40f7cad7c871cf2ad2af19ac542994-ExtRef{i}-Path"), path.ToString());
-            Assert.AreEqual(Context.ExpectedData.Get($"CAB-5d40f7cad7c871cf2ad2af19ac542994-ExtRef{i}-Type"), (long)refType);
+            ClassicAssert.AreEqual(ReturnCode.Success, r);
+            ClassicAssert.AreEqual(Context.ExpectedData.Get($"CAB-5d40f7cad7c871cf2ad2af19ac542994-ExtRef{i}-Guid"), guid.ToString());
+            ClassicAssert.AreEqual(Context.ExpectedData.Get($"CAB-5d40f7cad7c871cf2ad2af19ac542994-ExtRef{i}-Path"), path.ToString());
+            ClassicAssert.AreEqual(Context.ExpectedData.Get($"CAB-5d40f7cad7c871cf2ad2af19ac542994-ExtRef{i}-Type"), (long)refType);
         }
 
         file.Dispose();
@@ -545,7 +546,7 @@ public class DllSerializedFileTests : AssetBundleTestFixture
     public void GetExternalReference_InvalidHandle_ReturnError()
     {
         var r = DllWrapper.GetExternalReferenceCount(new SerializedFileHandle(), out _);
-        Assert.AreEqual(ReturnCode.InvalidArgument, r);
+        ClassicAssert.AreEqual(ReturnCode.InvalidArgument, r);
     }
 
     [Test]
@@ -554,8 +555,8 @@ public class DllSerializedFileTests : AssetBundleTestFixture
         DllWrapper.OpenSerializedFile("archive:/CAB-5d40f7cad7c871cf2ad2af19ac542994", out var file);
 
         var r = DllWrapper.GetObjectCount(file, out var count);
-        Assert.AreEqual(ReturnCode.Success, r);
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-ObjCount"), count);
+        ClassicAssert.AreEqual(ReturnCode.Success, r);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-ObjCount"), count);
 
         file.Dispose();
     }
@@ -564,7 +565,7 @@ public class DllSerializedFileTests : AssetBundleTestFixture
     public void GetObjectCount_InvalidHandle_ReturnError()
     {
         var r = DllWrapper.GetObjectCount(new SerializedFileHandle(), out _);
-        Assert.AreEqual(ReturnCode.InvalidArgument, r);
+        ClassicAssert.AreEqual(ReturnCode.InvalidArgument, r);
     }
 
     [Test]
@@ -575,19 +576,19 @@ public class DllSerializedFileTests : AssetBundleTestFixture
 
         var objectInfo = new ObjectInfo[count];
         var r = DllWrapper.GetObjectInfo(file, objectInfo, count);
-        Assert.AreEqual(ReturnCode.Success, r);
+        ClassicAssert.AreEqual(ReturnCode.Success, r);
 
         // Just make sure that first and last ObjectInfo struct are filled.
 
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-FirstObj-Id"), objectInfo[0].Id);
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-FirstObj-Offset"), objectInfo[0].Offset);
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-FirstObj-Size"), objectInfo[0].Size);
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-FirstObj-TypeId"), objectInfo[0].TypeId);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-FirstObj-Id"), objectInfo[0].Id);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-FirstObj-Offset"), objectInfo[0].Offset);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-FirstObj-Size"), objectInfo[0].Size);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-FirstObj-TypeId"), objectInfo[0].TypeId);
 
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-LastObj-Id"), objectInfo[count-1].Id);
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-LastObj-Offset"), objectInfo[count-1].Offset);
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-LastObj-Size"), objectInfo[count-1].Size);
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-LastObj-TypeId"), objectInfo[count-1].TypeId);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-LastObj-Id"), objectInfo[count-1].Id);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-LastObj-Offset"), objectInfo[count-1].Offset);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-LastObj-Size"), objectInfo[count-1].Size);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-LastObj-TypeId"), objectInfo[count-1].TypeId);
 
         file.Dispose();
     }
@@ -596,7 +597,7 @@ public class DllSerializedFileTests : AssetBundleTestFixture
     public void GetObjectInfo_InvalidHandle_ReturnError()
     {
         var r = DllWrapper.GetObjectInfo(new SerializedFileHandle(), new ObjectInfo[0], 0);
-        Assert.AreEqual(ReturnCode.InvalidArgument, r);
+        ClassicAssert.AreEqual(ReturnCode.InvalidArgument, r);
     }
 }
 
@@ -635,29 +636,29 @@ public class DllTypeTreeTests : AssetBundleTestFixture
     public void GetTypeTree_InvalidObjectId_ReturnError()
     {
         var r = DllWrapper.GetTypeTree(m_SerializedFile, 0, out var typeTree);
-        Assert.AreEqual(ReturnCode.InvalidObjectId, r);
+        ClassicAssert.AreEqual(ReturnCode.InvalidObjectId, r);
     }
 
     [Test]
     public void GetTypeTree_InvalidHandle_ReturnError()
     {
         var r = DllWrapper.GetTypeTree(new SerializedFileHandle(), 0, out _);
-        Assert.AreEqual(ReturnCode.InvalidArgument, r);
+        ClassicAssert.AreEqual(ReturnCode.InvalidArgument, r);
     }
 
     [Test]
     public void GetTypeTree_ValidSerializedFile_ReturnSuccess()
     {
         var r = DllWrapper.GetTypeTree(m_SerializedFile, m_Objects[0].Id, out var typeTree);
-        Assert.AreEqual(ReturnCode.Success, r);
-        Assert.IsFalse(typeTree.IsInvalid);
+        ClassicAssert.AreEqual(ReturnCode.Success, r);
+        ClassicAssert.IsFalse(typeTree.IsInvalid);
     }
 
     [Test]
     public void GetTypeTreeNodeInfo_InvalidHandle_ReturnError()
     {
         var r = DllWrapper.GetTypeTreeNodeInfo(new TypeTreeHandle(), 0, new StringBuilder(), 0, new StringBuilder(), 0, out _, out _, out _, out _, out _, out _);
-        Assert.AreEqual(ReturnCode.InvalidArgument, r);
+        ClassicAssert.AreEqual(ReturnCode.InvalidArgument, r);
     }
 
     [Test]
@@ -665,7 +666,7 @@ public class DllTypeTreeTests : AssetBundleTestFixture
     {
         DllWrapper.GetTypeTree(m_SerializedFile, m_Objects[0].Id, out var typeTree);
         var r = DllWrapper.GetTypeTreeNodeInfo(typeTree, 0, new StringBuilder(1), 1, new StringBuilder(256), 256, out _, out _, out _, out _, out _, out _);
-        Assert.AreEqual(ReturnCode.DestinationBufferTooSmall, r);
+        ClassicAssert.AreEqual(ReturnCode.DestinationBufferTooSmall, r);
     }
 
     [Test]
@@ -673,7 +674,7 @@ public class DllTypeTreeTests : AssetBundleTestFixture
     {
         DllWrapper.GetTypeTree(m_SerializedFile, m_Objects[0].Id, out var typeTree);
         var r = DllWrapper.GetTypeTreeNodeInfo(typeTree, 0, new StringBuilder(256), 256, new StringBuilder(1), 1, out _, out _, out _, out _, out _, out _);
-        Assert.AreEqual(ReturnCode.DestinationBufferTooSmall, r);
+        ClassicAssert.AreEqual(ReturnCode.DestinationBufferTooSmall, r);
     }
 
     [Test]
@@ -685,14 +686,14 @@ public class DllTypeTreeTests : AssetBundleTestFixture
             var type = new StringBuilder(256);
             var name = new StringBuilder(256);
             var r = DllWrapper.GetTypeTreeNodeInfo(typeTree, 0, type, type.Capacity, name, name.Capacity, out var offset, out var size, out var flags, out var metaFlags, out var firstChildNode, out var nextNode);
-            Assert.AreEqual(ReturnCode.Success, r);
-            Assert.AreNotEqual("", type.ToString());
-            Assert.AreEqual("Base", name.ToString());
-            Assert.AreEqual(-1, offset);
-            Assert.AreNotEqual(0, size);
-            Assert.AreEqual(TypeTreeFlags.None, flags);
-            Assert.AreEqual(1, firstChildNode);
-            Assert.AreEqual(0, nextNode);
+            ClassicAssert.AreEqual(ReturnCode.Success, r);
+            ClassicAssert.AreNotEqual("", type.ToString());
+            ClassicAssert.AreEqual("Base", name.ToString());
+            ClassicAssert.AreEqual(-1, offset);
+            ClassicAssert.AreNotEqual(0, size);
+            ClassicAssert.AreEqual(TypeTreeFlags.None, flags);
+            ClassicAssert.AreEqual(1, firstChildNode);
+            ClassicAssert.AreEqual(0, nextNode);
         }
     }
 
@@ -705,11 +706,11 @@ public class DllTypeTreeTests : AssetBundleTestFixture
             var name = new StringBuilder(256);
             var r = DllWrapper.GetTypeTreeNodeInfo(typeTree, nodeIndex, type, type.Capacity, name, name.Capacity, out var offset, out var size, out var flags, out var metaFlags, out var nextChild, out var nextNode);
 
-            Assert.AreEqual(ReturnCode.Success, r);
-            Assert.AreNotEqual("", type.ToString());
-            Assert.AreNotEqual("", name.ToString());
-            Assert.GreaterOrEqual(offset, -1);
-            Assert.GreaterOrEqual(size, -1);
+            ClassicAssert.AreEqual(ReturnCode.Success, r);
+            ClassicAssert.AreNotEqual("", type.ToString());
+            ClassicAssert.AreNotEqual("", name.ToString());
+            ClassicAssert.GreaterOrEqual(offset, -1);
+            ClassicAssert.GreaterOrEqual(size, -1);
 
             while (nextChild != 0)
             {
@@ -734,14 +735,14 @@ public class DllTypeTreeTests : AssetBundleTestFixture
     public void GetRefTypeTypeTree_InvalidHandle_ReturnError()
     {
         var r = DllWrapper.GetRefTypeTypeTree(new SerializedFileHandle(), "", "", "", out _);
-        Assert.AreEqual(ReturnCode.InvalidArgument, r);
+        ClassicAssert.AreEqual(ReturnCode.InvalidArgument, r);
     }
 
     [Test]
     public void GetRefTypeTypeTree_InvalidFQN_ReturnError()
     {
         var r = DllWrapper.GetRefTypeTypeTree(m_SerializedFile, "this", "is", "wrong", out _);
-        Assert.AreEqual(ReturnCode.TypeNotFound, r);
+        ClassicAssert.AreEqual(ReturnCode.TypeNotFound, r);
     }
 
     [Test]
@@ -749,7 +750,7 @@ public class DllTypeTreeTests : AssetBundleTestFixture
     {
         var r = DllWrapper.GetRefTypeTypeTree(m_SerializedFile, "SerializeReferencePolymorphismExample/Apple", "", "Assembly-CSharp", out var typeTree);
 
-        Assert.AreEqual(ReturnCode.Success, r);
+        ClassicAssert.AreEqual(ReturnCode.Success, r);
     }
 
     [Test]
@@ -757,28 +758,28 @@ public class DllTypeTreeTests : AssetBundleTestFixture
     {
         var r = DllWrapper.GetRefTypeTypeTree(m_SerializedFile, "SerializeReferencePolymorphismExample/Apple", "", "Assembly-CSharp", out var typeTree);
 
-        Assert.AreEqual(ReturnCode.Success, r);
+        ClassicAssert.AreEqual(ReturnCode.Success, r);
 
         var type = new StringBuilder(256);
         var name = new StringBuilder(256);
         r = DllWrapper.GetTypeTreeNodeInfo(typeTree, 0, type, type.Capacity, name, name.Capacity, out var offset, out var size, out var flags, out var metaFlags, out var firstChildNode, out var nextNode);
 
-        Assert.AreEqual(ReturnCode.Success, r);
-        Assert.AreEqual(1, firstChildNode);
-        Assert.AreEqual("Apple", type.ToString());
-        Assert.AreEqual("Base", name.ToString());
+        ClassicAssert.AreEqual(ReturnCode.Success, r);
+        ClassicAssert.AreEqual(1, firstChildNode);
+        ClassicAssert.AreEqual("Apple", type.ToString());
+        ClassicAssert.AreEqual("Base", name.ToString());
 
         r = DllWrapper.GetTypeTreeNodeInfo(typeTree, firstChildNode, type, type.Capacity, name, name.Capacity, out offset, out size, out flags, out metaFlags, out firstChildNode, out nextNode);
 
-        Assert.AreEqual(ReturnCode.Success, r);
-        Assert.AreEqual("int", type.ToString());
-        Assert.AreEqual("m_Data", name.ToString());
-        Assert.AreEqual(4, size);
+        ClassicAssert.AreEqual(ReturnCode.Success, r);
+        ClassicAssert.AreEqual("int", type.ToString());
+        ClassicAssert.AreEqual("m_Data", name.ToString());
+        ClassicAssert.AreEqual(4, size);
 
         r = DllWrapper.GetTypeTreeNodeInfo(typeTree, nextNode, type, type.Capacity, name, name.Capacity, out offset, out size, out flags, out metaFlags, out firstChildNode, out nextNode);
 
-        Assert.AreEqual(ReturnCode.Success, r);
-        Assert.AreEqual("string", type.ToString());
-        Assert.AreEqual("m_Description", name.ToString());
+        ClassicAssert.AreEqual(ReturnCode.Success, r);
+        ClassicAssert.AreEqual("string", type.ToString());
+        ClassicAssert.AreEqual("m_Description", name.ToString());
     }
 }

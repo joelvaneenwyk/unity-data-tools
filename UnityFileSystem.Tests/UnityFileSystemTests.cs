@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using UnityDataTools.TestCommon;
 
 namespace UnityDataTools.FileSystem.Tests;
@@ -39,8 +40,8 @@ public class ArchiveTests : AssetBundleTestFixture
     public void MountArchive_InvalidPath_ThrowsException()
     {
         var ex = Assert.Throws<FileNotFoundException>(() => UnityFileSystem.MountArchive("bad/path", "archive:/"));
-        Assert.AreEqual("File not found.", ex.Message);
-        Assert.AreEqual("bad/path", ex.FileName);
+        ClassicAssert.AreEqual("File not found.", ex.Message);
+        ClassicAssert.AreEqual("bad/path", ex.FileName);
     }
 
     [Test]
@@ -48,7 +49,7 @@ public class ArchiveTests : AssetBundleTestFixture
     {
         var path = Path.Combine(Context.TestDataFolder, "invalidfile");
         var ex = Assert.Throws<NotSupportedException>(() => UnityFileSystem.MountArchive(path, "archive:/"));
-        Assert.AreEqual($"Invalid file format reading {path}.", ex.Message);
+        ClassicAssert.AreEqual($"Invalid file format reading {path}.", ex.Message);
     }
         
     public void MountArchive_ValidArchive_ReturnsArchive()
@@ -57,7 +58,7 @@ public class ArchiveTests : AssetBundleTestFixture
 
         UnityArchive archive = null;
         Assert.DoesNotThrow(() => archive = UnityFileSystem.MountArchive(path, "archive:/"));
-        Assert.IsNotNull(archive);
+        ClassicAssert.IsNotNull(archive);
 
         archive.Dispose();
     }
@@ -91,19 +92,19 @@ public class ArchiveTests : AssetBundleTestFixture
 
         var nodes = archive.Nodes;
 
-        Assert.AreEqual(Context.ExpectedData.Get("NodeCount"), nodes.Count);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("NodeCount"), nodes.Count);
 
-        Assert.AreEqual("CAB-5d40f7cad7c871cf2ad2af19ac542994", nodes[0].Path);
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-Size"), nodes[0].Size);
-        Assert.AreEqual((ArchiveNodeFlags)Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-Flags"), nodes[0].Flags);
+        ClassicAssert.AreEqual("CAB-5d40f7cad7c871cf2ad2af19ac542994", nodes[0].Path);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-Size"), nodes[0].Size);
+        ClassicAssert.AreEqual((ArchiveNodeFlags)Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-Flags"), nodes[0].Flags);
 
-        Assert.AreEqual("CAB-5d40f7cad7c871cf2ad2af19ac542994.resS", nodes[1].Path);
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994.resS-Size"), nodes[1].Size);
-        Assert.AreEqual((ArchiveNodeFlags)Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994.resS-Flags"), nodes[1].Flags);
+        ClassicAssert.AreEqual("CAB-5d40f7cad7c871cf2ad2af19ac542994.resS", nodes[1].Path);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994.resS-Size"), nodes[1].Size);
+        ClassicAssert.AreEqual((ArchiveNodeFlags)Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994.resS-Flags"), nodes[1].Flags);
 
-        Assert.AreEqual("CAB-5d40f7cad7c871cf2ad2af19ac542994.resource", nodes[2].Path);
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994.resource-Size"), nodes[2].Size);
-        Assert.AreEqual((ArchiveNodeFlags)Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994.resource-Flags"), nodes[2].Flags);
+        ClassicAssert.AreEqual("CAB-5d40f7cad7c871cf2ad2af19ac542994.resource", nodes[2].Path);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994.resource-Size"), nodes[2].Size);
+        ClassicAssert.AreEqual((ArchiveNodeFlags)Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994.resource-Flags"), nodes[2].Flags);
 
         archive.Dispose();
     }
@@ -139,8 +140,8 @@ public class UnityFileTests : AssetBundleTestFixture
     {
         var ex = Assert.Throws<FileNotFoundException>(() => UnityFileSystem.OpenFile("bad/path"));
 
-        Assert.AreEqual("File not found.", ex.Message);
-        Assert.AreEqual("bad/path", ex.FileName);
+        ClassicAssert.AreEqual("File not found.", ex.Message);
+        ClassicAssert.AreEqual("bad/path", ex.FileName);
     }
 
     [Test]
@@ -150,7 +151,7 @@ public class UnityFileTests : AssetBundleTestFixture
         UnityFile file = null;
 
         Assert.DoesNotThrow(() => file = UnityFileSystem.OpenFile(path));
-        Assert.IsNotNull(file);
+        ClassicAssert.IsNotNull(file);
 
         Assert.DoesNotThrow(() => file.Dispose());
     }
@@ -161,7 +162,7 @@ public class UnityFileTests : AssetBundleTestFixture
         var path = Path.Combine(Context.TestDataFolder, "TextFile.txt");
         var file = UnityFileSystem.OpenFile(path);
 
-        Assert.AreEqual(21, file.GetSize());
+        ClassicAssert.AreEqual(21, file.GetSize());
 
         file.Dispose();
     }
@@ -186,26 +187,26 @@ public class UnityFileTests : AssetBundleTestFixture
         var actualSize = 0L;
 
         Assert.DoesNotThrow(() => newPos = file.Seek(16, SeekOrigin.Begin));
-        Assert.AreEqual(16, newPos);
+        ClassicAssert.AreEqual(16, newPos);
 
         actualSize = file.Read(4, buffer);
-        Assert.AreEqual(4, actualSize);
-        Assert.AreEqual("file", Encoding.Default.GetString(buffer, 0, (int)actualSize));
+        ClassicAssert.AreEqual(4, actualSize);
+        ClassicAssert.AreEqual("file", Encoding.Default.GetString(buffer, 0, (int)actualSize));
 
         Assert.DoesNotThrow(() => newPos = file.Seek(-4, SeekOrigin.Current));
-        Assert.AreEqual(16, newPos);
+        ClassicAssert.AreEqual(16, newPos);
 
         buffer = new Byte[16];
         actualSize = file.Read(4, buffer);
-        Assert.AreEqual(4, actualSize);
-        Assert.AreEqual("file", Encoding.Default.GetString(buffer, 0, (int)actualSize));
+        ClassicAssert.AreEqual(4, actualSize);
+        ClassicAssert.AreEqual("file", Encoding.Default.GetString(buffer, 0, (int)actualSize));
 
         Assert.DoesNotThrow(() => newPos = file.Seek(-5, SeekOrigin.End));
-        Assert.AreEqual(16, newPos);
+        ClassicAssert.AreEqual(16, newPos);
 
         actualSize = file.Read(4, buffer);
-        Assert.AreEqual(4, actualSize);
-        Assert.AreEqual("file", Encoding.Default.GetString(buffer, 0, (int)actualSize));
+        ClassicAssert.AreEqual(4, actualSize);
+        ClassicAssert.AreEqual("file", Encoding.Default.GetString(buffer, 0, (int)actualSize));
 
         file.Dispose();
     }
@@ -228,8 +229,8 @@ public class UnityFileTests : AssetBundleTestFixture
         var buffer = new Byte[1000];
         var actualSize = file.Read(1000, buffer);
 
-        Assert.AreEqual(21, actualSize);
-        Assert.AreEqual("This is my text file.", Encoding.Default.GetString(buffer, 0, (int)actualSize));
+        ClassicAssert.AreEqual(21, actualSize);
+        ClassicAssert.AreEqual("This is my text file.", Encoding.Default.GetString(buffer, 0, (int)actualSize));
 
         file.Dispose();
     }
@@ -250,7 +251,7 @@ public class UnityFileTests : AssetBundleTestFixture
         UnityFile file = null;
 
         Assert.DoesNotThrow(() => file = UnityFileSystem.OpenFile("archive:/CAB-5d40f7cad7c871cf2ad2af19ac542994"));
-        Assert.IsNotNull(file);
+        ClassicAssert.IsNotNull(file);
 
         file.Dispose();
     }
@@ -263,8 +264,8 @@ public class UnityFileTests : AssetBundleTestFixture
         var actualSize = 0L;
 
         Assert.DoesNotThrow(() => actualSize = file.Read(100, buffer));
-        Assert.AreEqual(100, actualSize);
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-Data"), buffer);
+        ClassicAssert.AreEqual(100, actualSize);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-Data"), buffer);
 
         file.Dispose();
     }
@@ -299,8 +300,8 @@ public class SerializedFileTests : AssetBundleTestFixture
     public void OpenSerializedFile_InvalidPath_ThrowsException()
     {
         var ex = Assert.Throws<FileNotFoundException>(() => UnityFileSystem.OpenSerializedFile("bad/path"));
-        Assert.AreEqual("File not found.", ex.Message);
-        Assert.AreEqual("bad/path", ex.FileName);
+        ClassicAssert.AreEqual("File not found.", ex.Message);
+        ClassicAssert.AreEqual("bad/path", ex.FileName);
     }
 
     [Test]
@@ -316,7 +317,7 @@ public class SerializedFileTests : AssetBundleTestFixture
         SerializedFile file = null;
             
         Assert.DoesNotThrow(() => file = UnityFileSystem.OpenSerializedFile("archive:/CAB-5d40f7cad7c871cf2ad2af19ac542994"));
-        Assert.IsNotNull(file);
+        ClassicAssert.IsNotNull(file);
 
         file.Dispose();
     }
@@ -353,7 +354,7 @@ public class SerializedFileTests : AssetBundleTestFixture
     {
         var file = UnityFileSystem.OpenSerializedFile("archive:/CAB-5d40f7cad7c871cf2ad2af19ac542994");
 
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-ExtRefCount"), file.ExternalReferences.Count);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-ExtRefCount"), file.ExternalReferences.Count);
 
         file.Dispose();
     }
@@ -366,9 +367,9 @@ public class SerializedFileTests : AssetBundleTestFixture
         int i = 0;
         foreach (var extRef in file.ExternalReferences)
         {
-            Assert.AreEqual(Context.ExpectedData.Get($"CAB-5d40f7cad7c871cf2ad2af19ac542994-ExtRef{i}-Guid"), extRef.Guid);
-            Assert.AreEqual(Context.ExpectedData.Get($"CAB-5d40f7cad7c871cf2ad2af19ac542994-ExtRef{i}-Path"), extRef.Path);
-            Assert.AreEqual(Context.ExpectedData.Get($"CAB-5d40f7cad7c871cf2ad2af19ac542994-ExtRef{i}-Type"), (long)extRef.Type);
+            ClassicAssert.AreEqual(Context.ExpectedData.Get($"CAB-5d40f7cad7c871cf2ad2af19ac542994-ExtRef{i}-Guid"), extRef.Guid);
+            ClassicAssert.AreEqual(Context.ExpectedData.Get($"CAB-5d40f7cad7c871cf2ad2af19ac542994-ExtRef{i}-Path"), extRef.Path);
+            ClassicAssert.AreEqual(Context.ExpectedData.Get($"CAB-5d40f7cad7c871cf2ad2af19ac542994-ExtRef{i}-Type"), (long)extRef.Type);
             ++i;
         }
 
@@ -380,7 +381,7 @@ public class SerializedFileTests : AssetBundleTestFixture
     {
         var file = UnityFileSystem.OpenSerializedFile("archive:/CAB-5d40f7cad7c871cf2ad2af19ac542994");
 
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-ObjCount"), file.Objects.Count);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-ObjCount"), file.Objects.Count);
 
         file.Dispose();
     }
@@ -392,15 +393,15 @@ public class SerializedFileTests : AssetBundleTestFixture
 
         // Just make sure that first and last ObjectInfo struct are filled.
 
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-FirstObj-Id"), file.Objects.First().Id);
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-FirstObj-Offset"), file.Objects.First().Offset);
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-FirstObj-Size"), file.Objects.First().Size);
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-FirstObj-TypeId"), file.Objects.First().TypeId);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-FirstObj-Id"), file.Objects.First().Id);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-FirstObj-Offset"), file.Objects.First().Offset);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-FirstObj-Size"), file.Objects.First().Size);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-FirstObj-TypeId"), file.Objects.First().TypeId);
 
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-LastObj-Id"), file.Objects.Last().Id);
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-LastObj-Offset"), file.Objects.Last().Offset);
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-LastObj-Size"), file.Objects.Last().Size);
-        Assert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-LastObj-TypeId"), file.Objects.Last().TypeId);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-LastObj-Id"), file.Objects.Last().Id);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-LastObj-Offset"), file.Objects.Last().Offset);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-LastObj-Size"), file.Objects.Last().Size);
+        ClassicAssert.AreEqual(Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-LastObj-TypeId"), file.Objects.Last().TypeId);
 
         file.Dispose();
     }
@@ -447,7 +448,7 @@ public class TypeTreeTests : AssetBundleTestFixture
         TypeTreeNode node = null;
 
         Assert.DoesNotThrow(() => node = m_SerializedFile.GetTypeTreeRoot(m_SerializedFile.Objects[0].Id));
-        Assert.IsNotNull(node);
+        ClassicAssert.IsNotNull(node);
     }
 
     [Test]
@@ -458,12 +459,12 @@ public class TypeTreeTests : AssetBundleTestFixture
             TypeTreeNode root = null;
 
             Assert.DoesNotThrow(() => root = m_SerializedFile.GetTypeTreeRoot(obj.Id));
-            Assert.IsNotNull(root);
-            Assert.AreNotEqual("", root.Type);
-            Assert.AreEqual("Base", root.Name);
-            Assert.AreEqual(-1, root.Offset);
-            Assert.AreNotEqual(0, root.Size);
-            Assert.AreEqual(TypeTreeFlags.None, root.Flags);
+            ClassicAssert.IsNotNull(root);
+            ClassicAssert.AreNotEqual("", root.Type);
+            ClassicAssert.AreEqual("Base", root.Name);
+            ClassicAssert.AreEqual(-1, root.Offset);
+            ClassicAssert.AreNotEqual(0, root.Size);
+            ClassicAssert.AreEqual(TypeTreeFlags.None, root.Flags);
         }
     }
 
@@ -474,12 +475,12 @@ public class TypeTreeTests : AssetBundleTestFixture
         {
             int count = 1;
 
-            Assert.IsNotNull(node);
-            Assert.AreNotEqual("", node.Type);
-            Assert.AreNotEqual("", node.Name);
-            Assert.GreaterOrEqual(node.Offset, -1);
-            Assert.GreaterOrEqual(node.Size, -1);
-            Assert.True(node.IsLeaf == (node.Children.Count == 0));
+            ClassicAssert.IsNotNull(node);
+            ClassicAssert.AreNotEqual("", node.Type);
+            ClassicAssert.AreNotEqual("", node.Name);
+            ClassicAssert.GreaterOrEqual(node.Offset, -1);
+            ClassicAssert.GreaterOrEqual(node.Size, -1);
+            ClassicAssert.True(node.IsLeaf == (node.Children.Count == 0));
 
             foreach (var child in node.Children)
             {
@@ -495,7 +496,7 @@ public class TypeTreeTests : AssetBundleTestFixture
 
             var count = ProcessNode(root);
 
-            Assert.Greater(count, 1);
+            ClassicAssert.Greater(count, 1);
         }
     }
 
@@ -511,7 +512,7 @@ public class TypeTreeTests : AssetBundleTestFixture
         TypeTreeNode node = null;
             
         Assert.DoesNotThrow(() => node = m_SerializedFile.GetRefTypeTypeTreeRoot("SerializeReferencePolymorphismExample/Apple", "", "Assembly-CSharp"));
-        Assert.NotNull(node);
+        ClassicAssert.NotNull(node);
     }
 
     [Test]
@@ -520,16 +521,16 @@ public class TypeTreeTests : AssetBundleTestFixture
         var node = m_SerializedFile.GetRefTypeTypeTreeRoot("SerializeReferencePolymorphismExample/Apple", "",
             "Assembly-CSharp");
 
-        Assert.AreEqual(2, node.Children.Count);
-        Assert.AreEqual("Apple", node.Type);
-        Assert.AreEqual("Base", node.Name);
+        ClassicAssert.AreEqual(2, node.Children.Count);
+        ClassicAssert.AreEqual("Apple", node.Type);
+        ClassicAssert.AreEqual("Base", node.Name);
             
-        Assert.AreEqual("int", node.Children[0].Type);
-        Assert.AreEqual("m_Data", node.Children[0].Name);
-        Assert.AreEqual(4, node.Children[0].Size);
+        ClassicAssert.AreEqual("int", node.Children[0].Type);
+        ClassicAssert.AreEqual("m_Data", node.Children[0].Name);
+        ClassicAssert.AreEqual(4, node.Children[0].Size);
             
-        Assert.AreEqual("string", node.Children[1].Type);
-        Assert.AreEqual("m_Description", node.Children[1].Name);
+        ClassicAssert.AreEqual("string", node.Children[1].Type);
+        ClassicAssert.AreEqual("m_Description", node.Children[1].Name);
     }
 }
 
@@ -579,8 +580,8 @@ public class RandomAccessReaderTests : AssetBundleTestFixture
                 break;
             }
         }
-            
-        Assert.Less(i, m_SerializedFile.Objects.Count);
+
+        ClassicAssert.Less(i, m_SerializedFile.Objects.Count);
 
         return obj;
     }
@@ -593,9 +594,9 @@ public class RandomAccessReaderTests : AssetBundleTestFixture
         var root = m_SerializedFile.GetTypeTreeRoot(obj.Id);
         var reader = new TypeTreeReaders.RandomAccessReader(m_SerializedFile, root, m_Reader, obj.Offset);
             
-        Assert.AreEqual("Lame", reader["m_Name"].GetValue<string>());
-        Assert.AreEqual(228, reader["m_SubMeshes"][0]["vertexCount"].GetValue<UInt32>());
-        Assert.AreEqual(false, reader["m_IsReadable"].GetValue<bool>());
+        ClassicAssert.AreEqual("Lame", reader["m_Name"].GetValue<string>());
+        ClassicAssert.AreEqual(228, reader["m_SubMeshes"][0]["vertexCount"].GetValue<UInt32>());
+        ClassicAssert.AreEqual(false, reader["m_IsReadable"].GetValue<bool>());
     }
         
     [Test]
@@ -633,12 +634,12 @@ public class RandomAccessReaderTests : AssetBundleTestFixture
             id1 = reader["m_Item2"]["rid"].GetValue<long>();
         }
             
-        Assert.IsTrue(reader["references"].HasChild($"rid({id0})"));
-        Assert.IsTrue(reader["references"].HasChild($"rid({id1})"));
+        ClassicAssert.IsTrue(reader["references"].HasChild($"rid({id0})"));
+        ClassicAssert.IsTrue(reader["references"].HasChild($"rid({id1})"));
             
-        Assert.AreEqual(1, reader["references"][$"rid({id0})"]["data"]["m_Data"].GetValue<int>());
-        Assert.AreEqual("Ripe", reader["references"][$"rid({id0})"]["data"]["m_Description"].GetValue<string>());
-        Assert.AreEqual(1, reader["references"][$"rid({id1})"]["data"]["m_Data"].GetValue<int>());
-        Assert.AreEqual(1, reader["references"][$"rid({id1})"]["data"]["m_IsRound"].GetValue<byte>());
+        ClassicAssert.AreEqual(1, reader["references"][$"rid({id0})"]["data"]["m_Data"].GetValue<int>());
+        ClassicAssert.AreEqual("Ripe", reader["references"][$"rid({id0})"]["data"]["m_Description"].GetValue<string>());
+        ClassicAssert.AreEqual(1, reader["references"][$"rid({id1})"]["data"]["m_Data"].GetValue<int>());
+        ClassicAssert.AreEqual(1, reader["references"][$"rid({id1})"]["data"]["m_IsRound"].GetValue<byte>());
     }
 }

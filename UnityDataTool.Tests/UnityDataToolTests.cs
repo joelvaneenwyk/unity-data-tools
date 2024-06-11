@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using UnityDataTools.FileSystem;
 using UnityDataTools.TestCommon;
 
@@ -54,21 +55,21 @@ public class UnityDataToolTests : AssetBundleTestFixture
     {
         var path = Path.Combine(Context.TestDataFolder, "invalidfile");
         var command = args.Append(path);
-        Assert.AreNotEqual(0, await Program.Main(command.ToArray()));
+        ClassicAssert.AreNotEqual(0, await Program.Main(command.ToArray()));
     }
 
     public void IsWebBundle_True()
     {
 
         var webBundlePath = Path.Combine(Context.TestDataFolder, "WebBundles", "HelloWorld.data");
-        Assert.IsTrue(Archive.IsWebBundle(new FileInfo(webBundlePath)));
+        ClassicAssert.IsTrue(Archive.IsWebBundle(new FileInfo(webBundlePath)));
     }
 
     [Test]
     public void IsWebBundle_False()
     {
         var nonWebBundlePath = Path.Combine(Context.TestDataFolder, "WebBundles", "NotAWebBundle.txt");
-        Assert.IsFalse(Archive.IsWebBundle(new FileInfo(nonWebBundlePath)));
+        ClassicAssert.IsFalse(Archive.IsWebBundle(new FileInfo(nonWebBundlePath)));
     }
 
     [Test]
@@ -77,10 +78,10 @@ public class UnityDataToolTests : AssetBundleTestFixture
     {
         var path = Path.Combine(Context.UnityDataFolder, "assetbundle");
 
-        Assert.AreEqual(0, await Program.Main(new string[] { "archive", "extract", path }.Concat(options.Split(" ", StringSplitOptions.RemoveEmptyEntries)).ToArray()));
-        Assert.IsTrue(File.Exists(Path.Combine(m_TestOutputFolder, "archive", "CAB-5d40f7cad7c871cf2ad2af19ac542994")));
-        Assert.IsTrue(File.Exists(Path.Combine(m_TestOutputFolder, "archive", "CAB-5d40f7cad7c871cf2ad2af19ac542994.resS")));
-        Assert.IsTrue(File.Exists(Path.Combine(m_TestOutputFolder, "archive", "CAB-5d40f7cad7c871cf2ad2af19ac542994.resource")));
+        ClassicAssert.AreEqual(0, await Program.Main(new string[] { "archive", "extract", path }.Concat(options.Split(" ", StringSplitOptions.RemoveEmptyEntries)).ToArray()));
+        ClassicAssert.IsTrue(File.Exists(Path.Combine(m_TestOutputFolder, "archive", "CAB-5d40f7cad7c871cf2ad2af19ac542994")));
+        ClassicAssert.IsTrue(File.Exists(Path.Combine(m_TestOutputFolder, "archive", "CAB-5d40f7cad7c871cf2ad2af19ac542994.resS")));
+        ClassicAssert.IsTrue(File.Exists(Path.Combine(m_TestOutputFolder, "archive", "CAB-5d40f7cad7c871cf2ad2af19ac542994.resource")));
     }
 
     [Test]
@@ -97,10 +98,10 @@ public class UnityDataToolTests : AssetBundleTestFixture
             Path.Combine("Il2CppData", "Metadata", "global-metadata.dat"),
             Path.Combine("Resources", "unity_default_resources"),
         };
-        Assert.AreEqual(0, await Program.Main(new string[] { "archive", "extract", path }.Concat(options.Split(" ", StringSplitOptions.RemoveEmptyEntries)).ToArray()));
+        ClassicAssert.AreEqual(0, await Program.Main(new string[] { "archive", "extract", path }.Concat(options.Split(" ", StringSplitOptions.RemoveEmptyEntries)).ToArray()));
         foreach (var file in expectedFiles)
         {
-            Assert.IsTrue(File.Exists(Path.Combine(m_TestOutputFolder, "archive", file)));
+            ClassicAssert.IsTrue(File.Exists(Path.Combine(m_TestOutputFolder, "archive", file)));
         }
     }
 
@@ -114,21 +115,21 @@ public class UnityDataToolTests : AssetBundleTestFixture
         {
             Console.SetOut(sw);
 
-            Assert.AreEqual(0, await Program.Main(new string[] { "archive", "list", path }));
+            ClassicAssert.AreEqual(0, await Program.Main(new string[] { "archive", "list", path }));
 
             var lines = sw.ToString().Split(sw.NewLine);
 
-            Assert.AreEqual("CAB-5d40f7cad7c871cf2ad2af19ac542994", lines[0]);
-            Assert.AreEqual($"  Size: {Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-Size")}", lines[1]);
-            Assert.AreEqual($"  Flags: {(ArchiveNodeFlags)(long)Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-Flags")}", lines[2]);
+            ClassicAssert.AreEqual("CAB-5d40f7cad7c871cf2ad2af19ac542994", lines[0]);
+            ClassicAssert.AreEqual($"  Size: {Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-Size")}", lines[1]);
+            ClassicAssert.AreEqual($"  Flags: {(ArchiveNodeFlags)(long)Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994-Flags")}", lines[2]);
 
-            Assert.AreEqual("CAB-5d40f7cad7c871cf2ad2af19ac542994.resS", lines[4]);
-            Assert.AreEqual($"  Size: {Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994.resS-Size")}", lines[5]);
-            Assert.AreEqual($"  Flags: {(ArchiveNodeFlags)(long)Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994.resS-Flags")}", lines[6]);
+            ClassicAssert.AreEqual("CAB-5d40f7cad7c871cf2ad2af19ac542994.resS", lines[4]);
+            ClassicAssert.AreEqual($"  Size: {Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994.resS-Size")}", lines[5]);
+            ClassicAssert.AreEqual($"  Flags: {(ArchiveNodeFlags)(long)Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994.resS-Flags")}", lines[6]);
 
-            Assert.AreEqual("CAB-5d40f7cad7c871cf2ad2af19ac542994.resource", lines[8]);
-            Assert.AreEqual($"  Size: {Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994.resource-Size")}", lines[9]);
-            Assert.AreEqual($"  Flags: {(ArchiveNodeFlags)(long)Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994.resource-Flags")}", lines[10]);
+            ClassicAssert.AreEqual("CAB-5d40f7cad7c871cf2ad2af19ac542994.resource", lines[8]);
+            ClassicAssert.AreEqual($"  Size: {Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994.resource-Size")}", lines[9]);
+            ClassicAssert.AreEqual($"  Flags: {(ArchiveNodeFlags)(long)Context.ExpectedData.Get("CAB-5d40f7cad7c871cf2ad2af19ac542994.resource-Flags")}", lines[10]);
 
         }
         finally
@@ -152,7 +153,7 @@ public class UnityDataToolTests : AssetBundleTestFixture
         {
             Console.SetOut(sw);
 
-            Assert.AreEqual(0, await Program.Main(new string[] { "archive", "list", path }));
+            ClassicAssert.AreEqual(0, await Program.Main(new string[] { "archive", "list", path }));
 
             var actualOutput = sw.ToString();
             var expectedOutput = (
@@ -177,7 +178,7 @@ Resources/unity_default_resources
 "
             );
 
-            Assert.AreEqual(expectedOutput, actualOutput);
+            ClassicAssert.AreEqual(expectedOutput, actualOutput);
         }
         finally
         {
@@ -192,8 +193,8 @@ Resources/unity_default_resources
         var path = Path.Combine(Context.UnityDataFolder, "assetbundle");
         var outputFile = Path.Combine(m_TestOutputFolder, "CAB-5d40f7cad7c871cf2ad2af19ac542994.txt");
 
-        Assert.AreEqual(0, await Program.Main(new string[] { "dump", path }.Concat(options.Split(" ", StringSplitOptions.RemoveEmptyEntries)).ToArray()));
-        Assert.IsTrue(File.Exists(outputFile));
+        ClassicAssert.AreEqual(0, await Program.Main(new string[] { "dump", path }.Concat(options.Split(" ", StringSplitOptions.RemoveEmptyEntries)).ToArray()));
+        ClassicAssert.IsTrue(File.Exists(outputFile));
 
         var content = File.ReadAllText(outputFile);
         var expected = File.ReadAllText(Path.Combine(Context.ExpectedDataFolder, "dump", "CAB-5d40f7cad7c871cf2ad2af19ac542994.txt"));
@@ -202,7 +203,7 @@ Resources/unity_default_resources
         content = Regex.Replace(content, @"\r\n|\n\r|\r", "\n");
         expected = Regex.Replace(expected, @"\r\n|\n\r|\r", "\n");
 
-        Assert.AreEqual(expected, content);
+        ClassicAssert.AreEqual(expected, content);
     }
 
     [Test]
@@ -212,8 +213,8 @@ Resources/unity_default_resources
         var path = Path.Combine(Context.UnityDataFolder, "assetbundle");
         var outputFile = Path.Combine(m_TestOutputFolder, "CAB-5d40f7cad7c871cf2ad2af19ac542994.txt");
 
-        Assert.AreEqual(0, await Program.Main(new string[] { "dump", path }.Concat(options.Split(" ", StringSplitOptions.RemoveEmptyEntries)).ToArray()));
-        Assert.IsTrue(File.Exists(outputFile));
+        ClassicAssert.AreEqual(0, await Program.Main(new string[] { "dump", path }.Concat(options.Split(" ", StringSplitOptions.RemoveEmptyEntries)).ToArray()));
+        ClassicAssert.IsTrue(File.Exists(outputFile));
 
         var content = File.ReadAllText(outputFile);
         var expected = File.ReadAllText(Path.Combine(Context.ExpectedDataFolder, "dump-s", "CAB-5d40f7cad7c871cf2ad2af19ac542994.txt"));
@@ -222,7 +223,7 @@ Resources/unity_default_resources
         content = Regex.Replace(content, @"\r\n|\n\r|\r", "\n");
         expected = Regex.Replace(expected, @"\r\n|\n\r|\r", "\n");
 
-        Assert.AreEqual(expected, content);
+        ClassicAssert.AreEqual(expected, content);
     }
 
     [Test]
@@ -231,7 +232,7 @@ Resources/unity_default_resources
         var databasePath = Path.Combine(m_TestOutputFolder, "database.db");
         var analyzePath = Path.Combine(Context.UnityDataFolder);
 
-        Assert.AreEqual(0, await Program.Main(new string[] { "analyze", analyzePath }));
+        ClassicAssert.AreEqual(0, await Program.Main(new string[] { "analyze", analyzePath }));
 
         ValidateDatabase(databasePath, true);
     }
@@ -243,7 +244,7 @@ Resources/unity_default_resources
         var databasePath = Path.Combine(m_TestOutputFolder, "database.db");
         var analyzePath = Path.Combine(Context.UnityDataFolder);
 
-        Assert.AreEqual(0, await Program.Main(new string[] { "analyze", analyzePath }.Concat(options.Split(" ")).ToArray()));
+        ClassicAssert.AreEqual(0, await Program.Main(new string[] { "analyze", analyzePath }.Concat(options.Split(" ")).ToArray()));
 
         ValidateDatabase(databasePath, false);
     }
@@ -255,7 +256,7 @@ Resources/unity_default_resources
         var databasePath = Path.Combine(m_TestOutputFolder, "database.db");
         var analyzePath = Path.Combine(Context.UnityDataFolder);
 
-        Assert.AreEqual(0, await Program.Main(new string[] { "analyze", analyzePath }.Concat(options.Split(" ")).ToArray()));
+        ClassicAssert.AreEqual(0, await Program.Main(new string[] { "analyze", analyzePath }.Concat(options.Split(" ")).ToArray()));
 
         ValidateDatabase(databasePath, true);
     }
@@ -267,7 +268,7 @@ Resources/unity_default_resources
         var databasePath = Path.Combine(m_TestOutputFolder, "database.db");
         var analyzePath = Path.Combine(Context.UnityDataFolder);
 
-        Assert.AreEqual(0, await Program.Main(new string[] { "analyze", analyzePath }.Concat(options.Split(" ")).ToArray()));
+        ClassicAssert.AreEqual(0, await Program.Main(new string[] { "analyze", analyzePath }.Concat(options.Split(" ")).ToArray()));
 
         using var db = new SQLiteConnection($"Data Source={databasePath};Version=3;New=True;Foreign Keys=False;");
         db.Open();
@@ -276,7 +277,7 @@ Resources/unity_default_resources
         {
             cmd.CommandText = "SELECT COUNT(*) FROM objects";
 
-            Assert.AreEqual(0, cmd.ExecuteScalar());
+            ClassicAssert.AreEqual(0, cmd.ExecuteScalar());
         }
     }
 
@@ -287,7 +288,7 @@ Resources/unity_default_resources
         var databasePath = Path.Combine(m_TestOutputFolder, "my_database");
         var analyzePath = Path.Combine(Context.UnityDataFolder);
 
-        Assert.AreEqual(0, await Program.Main(new string[] { "analyze", analyzePath }.Concat(options.Split(" ")).ToArray()));
+        ClassicAssert.AreEqual(0, await Program.Main(new string[] { "analyze", analyzePath }.Concat(options.Split(" ")).ToArray()));
 
         ValidateDatabase(databasePath, true);
     }
@@ -320,20 +321,20 @@ Resources/unity_default_resources
 
             reader.Read();
 
-            Assert.AreEqual(Context.ExpectedData.Get("animation_clips_count"), reader.GetInt32(0));
-            Assert.AreEqual(Context.ExpectedData.Get("asset_bundles_count"), reader.GetInt32(1));
-            Assert.AreEqual(Context.ExpectedData.Get("assets_count"), reader.GetInt32(2));
-            Assert.AreEqual(Context.ExpectedData.Get("audio_clips_count"), reader.GetInt32(3));
-            Assert.AreEqual(Context.ExpectedData.Get("meshes_count"), reader.GetInt32(4));
-            Assert.AreEqual(Context.ExpectedData.Get("objects_count"), reader.GetInt32(5));
-            Assert.AreEqual(withRefs ? Context.ExpectedData.Get("refs_count") : 0, reader.GetInt32(6));
-            Assert.AreEqual(Context.ExpectedData.Get("serialized_files_count"), reader.GetInt32(7));
-            Assert.AreEqual(Context.ExpectedData.Get("shader_subprograms_count"), reader.GetInt32(8));
-            Assert.AreEqual(Context.ExpectedData.Get("shaders_count"), reader.GetInt32(9));
-            Assert.AreEqual(Context.ExpectedData.Get("shader_keywords_count"), reader.GetInt32(10));
-            Assert.AreEqual(Context.ExpectedData.Get("shader_subprogram_keywords_count"), reader.GetInt32(11));
-            Assert.AreEqual(Context.ExpectedData.Get("textures_count"), reader.GetInt32(12));
-            Assert.AreEqual(Context.ExpectedData.Get("types_count"), reader.GetInt32(13));
+            ClassicAssert.AreEqual(Context.ExpectedData.Get("animation_clips_count"), reader.GetInt32(0));
+            ClassicAssert.AreEqual(Context.ExpectedData.Get("asset_bundles_count"), reader.GetInt32(1));
+            ClassicAssert.AreEqual(Context.ExpectedData.Get("assets_count"), reader.GetInt32(2));
+            ClassicAssert.AreEqual(Context.ExpectedData.Get("audio_clips_count"), reader.GetInt32(3));
+            ClassicAssert.AreEqual(Context.ExpectedData.Get("meshes_count"), reader.GetInt32(4));
+            ClassicAssert.AreEqual(Context.ExpectedData.Get("objects_count"), reader.GetInt32(5));
+            ClassicAssert.AreEqual(withRefs ? Context.ExpectedData.Get("refs_count") : 0, reader.GetInt32(6));
+            ClassicAssert.AreEqual(Context.ExpectedData.Get("serialized_files_count"), reader.GetInt32(7));
+            ClassicAssert.AreEqual(Context.ExpectedData.Get("shader_subprograms_count"), reader.GetInt32(8));
+            ClassicAssert.AreEqual(Context.ExpectedData.Get("shaders_count"), reader.GetInt32(9));
+            ClassicAssert.AreEqual(Context.ExpectedData.Get("shader_keywords_count"), reader.GetInt32(10));
+            ClassicAssert.AreEqual(Context.ExpectedData.Get("shader_subprogram_keywords_count"), reader.GetInt32(11));
+            ClassicAssert.AreEqual(Context.ExpectedData.Get("textures_count"), reader.GetInt32(12));
+            ClassicAssert.AreEqual(Context.ExpectedData.Get("types_count"), reader.GetInt32(13));
         }
     }
 }
@@ -369,7 +370,7 @@ public class UnityDataToolPlayerDataTests : PlayerDataTestFixture
         var databasePath = Path.Combine(m_TestOutputFolder, "database.db");
         var analyzePath = Path.Combine(Context.UnityDataFolder);
 
-        Assert.AreEqual(0, await Program.Main(new string[] { "analyze", analyzePath, "-p", "*." }));
+        ClassicAssert.AreEqual(0, await Program.Main(new string[] { "analyze", analyzePath, "-p", "*." }));
 
         using var db = new SQLiteConnection($"Data Source={databasePath};Version=3;New=True;Foreign Keys=False;");
         db.Open();
@@ -387,11 +388,11 @@ public class UnityDataToolPlayerDataTests : PlayerDataTestFixture
 
         reader.Read();
 
-        Assert.AreEqual(0, reader.GetInt32(0));
-        Assert.AreEqual(0, reader.GetInt32(1));
-        Assert.Greater(reader.GetInt32(2), 0);
-        Assert.Greater(reader.GetInt32(3), 0);
-        Assert.AreEqual(1, reader.GetInt32(4));
+        ClassicAssert.AreEqual(0, reader.GetInt32(0));
+        ClassicAssert.AreEqual(0, reader.GetInt32(1));
+        ClassicAssert.Greater(reader.GetInt32(2), 0);
+        ClassicAssert.Greater(reader.GetInt32(3), 0);
+        ClassicAssert.AreEqual(1, reader.GetInt32(4));
     }
 
     [Test]
@@ -400,8 +401,8 @@ public class UnityDataToolPlayerDataTests : PlayerDataTestFixture
         var path = Path.Combine(Context.UnityDataFolder, "level0");
         var outputFile = Path.Combine(m_TestOutputFolder, "level0.txt");
 
-        Assert.AreEqual(0, await Program.Main(new string[] { "dump", path }));
-        Assert.IsTrue(File.Exists(outputFile));
+        ClassicAssert.AreEqual(0, await Program.Main(new string[] { "dump", path }));
+        ClassicAssert.IsTrue(File.Exists(outputFile));
 
         var content = File.ReadAllText(outputFile);
         var expected = File.ReadAllText(Path.Combine(Context.ExpectedDataFolder, "level0.txt"));
@@ -410,6 +411,6 @@ public class UnityDataToolPlayerDataTests : PlayerDataTestFixture
         content = Regex.Replace(content, @"\r\n|\n\r|\r", "\n");
         expected = Regex.Replace(expected, @"\r\n|\n\r|\r", "\n");
 
-        Assert.AreEqual(expected, content);
+        ClassicAssert.AreEqual(expected, content);
     }
 }
