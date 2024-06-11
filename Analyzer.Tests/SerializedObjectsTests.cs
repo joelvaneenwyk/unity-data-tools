@@ -19,7 +19,7 @@ public class SerializedObjectsTests : AssetBundleTestFixture
     public SerializedObjectsTests(Context context) : base(context)
     {
     }
-    
+
     protected override void OnLoadExpectedData(Context context)
     {
         // Uncomment to regenerate expected data.
@@ -36,7 +36,7 @@ public class SerializedObjectsTests : AssetBundleTestFixture
         m_SerializedFile = UnityFileSystem.OpenSerializedFile("archive:/CAB-5d40f7cad7c871cf2ad2af19ac542994");
         m_FileReader = new UnityFileReader("archive:/CAB-5d40f7cad7c871cf2ad2af19ac542994", 1024*1024);
     }
-    
+
     [OneTimeTearDown]
     public void TearDown()
     {
@@ -46,7 +46,7 @@ public class SerializedObjectsTests : AssetBundleTestFixture
 
         UnityFileSystem.Cleanup();
     }
-    
+
     T ReadObject<T>(long id, Func<RandomAccessReader, T> creator)
     {
         var objectInfo = m_SerializedFile.Objects.First(x => x.Id == id);
@@ -61,7 +61,7 @@ public class SerializedObjectsTests : AssetBundleTestFixture
     {
         var texture = ReadObject(id, Texture2D.Read);
         var expectedTexture = (Texture2D)Context.ExpectedData.Get(name);
-        
+
         ClassicAssert.AreEqual(expectedTexture.Name, texture.Name);
         ClassicAssert.AreEqual(expectedTexture.StreamDataSize, texture.StreamDataSize);
         ClassicAssert.AreEqual(expectedTexture.Width, texture.Width);
@@ -70,24 +70,24 @@ public class SerializedObjectsTests : AssetBundleTestFixture
         ClassicAssert.AreEqual(expectedTexture.MipCount, texture.MipCount);
         ClassicAssert.AreEqual(expectedTexture.RwEnabled, texture.RwEnabled);
     }
-    
+
     [Test]
     public void TestAnimationClip()
     {
         var clip = ReadObject(2152370074763270995, AnimationClip.Read);
         var expectedClip = (AnimationClip)Context.ExpectedData.Get("AnimationClip");
-        
+
         ClassicAssert.AreEqual(expectedClip.Name, clip.Name);
         ClassicAssert.AreEqual(expectedClip.Events, clip.Events);
         ClassicAssert.AreEqual(expectedClip.Legacy, clip.Legacy);
     }
-    
+
     [Test]
     public void TestAudioClip()
     {
         var clip = ReadObject(-8074603400156879931, AudioClip.Read);
         var expectedClip = (AudioClip)Context.ExpectedData.Get("AudioClip");
-        
+
         ClassicAssert.AreEqual(expectedClip.Name, clip.Name);
         ClassicAssert.AreEqual(expectedClip.Channels, clip.Channels);
         ClassicAssert.AreEqual(expectedClip.Format, clip.Format);
@@ -96,13 +96,13 @@ public class SerializedObjectsTests : AssetBundleTestFixture
         ClassicAssert.AreEqual(expectedClip.BitsPerSample, clip.BitsPerSample);
         ClassicAssert.AreEqual(expectedClip.StreamDataSize, clip.StreamDataSize);
     }
-    
+
     [Test]
     public void TestAssetBundle()
     {
         var bundle = ReadObject(1, AssetBundle.Read);
         var expectedBundle = (AssetBundle)Context.ExpectedData.Get("AssetBundle");
-        
+
         ClassicAssert.AreEqual(expectedBundle.Name, bundle.Name);
         ClassicAssert.AreEqual(expectedBundle.Assets.Count, bundle.Assets.Count);
 
@@ -110,19 +110,19 @@ public class SerializedObjectsTests : AssetBundleTestFixture
         {
             var asset = bundle.Assets[i];
             var expectedAsset = expectedBundle.Assets[i];
-            
+
             ClassicAssert.AreEqual(expectedAsset.Name, asset.Name);
             ClassicAssert.AreEqual(expectedAsset.PPtr.FileId, asset.PPtr.FileId);
             ClassicAssert.AreEqual(expectedAsset.PPtr.PathId, asset.PPtr.PathId);
         }
     }
-    
+
     [Test]
     public void TestMesh()
     {
         var mesh = ReadObject(4693305862354978555, Mesh.Read);
         var expectedMesh = (Mesh)Context.ExpectedData.Get("Mesh");
-        
+
         ClassicAssert.AreEqual(expectedMesh.Name, mesh.Name);
         ClassicAssert.AreEqual(expectedMesh.Bones, mesh.Bones);
         ClassicAssert.AreEqual(expectedMesh.Compression, mesh.Compression);
@@ -131,14 +131,14 @@ public class SerializedObjectsTests : AssetBundleTestFixture
         ClassicAssert.AreEqual(expectedMesh.BlendShapes, mesh.BlendShapes);
         ClassicAssert.AreEqual(expectedMesh.RwEnabled, mesh.RwEnabled);
         ClassicAssert.AreEqual(expectedMesh.StreamDataSize, mesh.StreamDataSize);
-        
+
         ClassicAssert.AreEqual(expectedMesh.Channels.Count, mesh.Channels.Count);
 
         for (int i = 0; i < mesh.Channels.Count; ++i)
         {
             var channel = mesh.Channels[i];
             var expectedChannel = expectedMesh.Channels[i];
-            
+
             ClassicAssert.AreEqual(expectedChannel.Dimension, channel.Dimension);
             ClassicAssert.AreEqual(expectedChannel.Type, channel.Type);
             ClassicAssert.AreEqual(expectedChannel.Usage, channel.Usage);
@@ -150,27 +150,27 @@ public class SerializedObjectsTests : AssetBundleTestFixture
     {
         var shader = ReadObject(-4850512016903265157, Shader.Read);
         var expectedShader = (Shader)Context.ExpectedData.Get("Shader");
-        
+
         ClassicAssert.AreEqual(expectedShader.Name, shader.Name);
         ClassicAssert.AreEqual(expectedShader.DecompressedSize, shader.DecompressedSize);
-        CollectionAssert.AreEquivalent(expectedShader.Keywords, shader.Keywords);
+        Assert.That(shader.Keywords, Is.EquivalentTo(expectedShader.Keywords));
         ClassicAssert.AreEqual(expectedShader.SubShaders.Count, shader.SubShaders.Count);
 
         for (int i = 0; i < shader.SubShaders.Count; ++i)
         {
             var subShader = shader.SubShaders[i];
             var expectedSubShader = shader.SubShaders[i];
-            
+
             ClassicAssert.AreEqual(expectedSubShader.Passes.Count, subShader.Passes.Count);
 
             for (int j = 0; j < subShader.Passes.Count; ++j)
             {
                 var pass = subShader.Passes[i];
                 var expectedPass = expectedSubShader.Passes[i];
-                
+
                 ClassicAssert.AreEqual(expectedPass.Name, pass.Name);
                 ClassicAssert.AreEqual(expectedPass.Programs.Count, pass.Programs.Count);
-                CollectionAssert.AreEquivalent(expectedPass.Programs.Keys, pass.Programs.Keys);
+                Assert.That(pass.Programs.Keys, Is.EquivalentTo(expectedPass.Programs.Keys));
 
                 foreach (var programsPerType in pass.Programs)
                 {
@@ -183,11 +183,11 @@ public class SerializedObjectsTests : AssetBundleTestFixture
                     {
                         var program = programs[k];
                         var expectedProgram = expectedPrograms[k];
-                        
+
                         ClassicAssert.AreEqual(expectedProgram.Api, program.Api);
                         ClassicAssert.AreEqual(expectedProgram.BlobIndex, program.BlobIndex);
                         ClassicAssert.AreEqual(expectedProgram.HwTier, program.HwTier);
-                        CollectionAssert.AreEquivalent(expectedProgram.Keywords, program.Keywords);
+                        Assert.That(program.Keywords, Is.EquivalentTo(expectedProgram.Keywords));
                     }
                 }
             }
